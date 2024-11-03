@@ -10,36 +10,15 @@ import SwiftUI
 struct ContentView: View {
     
     @State private var showAddSheet = false
-    
-    @State private var todos = [Todo(title: "Feed the cat", isCompleted: true),
-                                Todo(title: "Play with cat", subtitle: "Use his favourite String!"),
-                                Todo(title: "Get allergies"),
-                                Todo(title: "Run away from cat"),
-                                Todo(title: "Get a new cat")]
+    @Environment(TodoManager.self) var todoManager
     
     var body: some View {
+        
+        @Bindable var todoManager = todoManager
+        
         NavigationStack {
-            List ($todos, editActions: [.all]) { $todo in
-                NavigationLink {
-                    TodoDetailView(todo: $todo)
-                } label:{
-                    HStack {
-                        Image(systemName: todo.isCompleted ? "checkmark.circle.fill" : "circle")
-                            .onTapGesture {
-                                todo.isCompleted.toggle()
-                            }
-                        VStack(alignment: .leading) {
-                            Text(todo.title)
-                                .strikethrough(todo.isCompleted)
-                            if !todo.subtitle.isEmpty {
-                                Text(todo.subtitle)
-                                    .font(.footnote)
-                                    .foregroundStyle(.gray)
-                                    .strikethrough(todo.isCompleted)
-                            }
-                        }
-                    }
-                }
+            List ($todoManager.todos, editActions: [.all]) { $todo in
+                TodoRowView(todo: $todo)
             }
             .navigationTitle("Todos")
             .toolbar {
@@ -55,7 +34,7 @@ struct ContentView: View {
                 }
             }
             .sheet(isPresented: $showAddSheet) {
-                NewTodoView(sourceArray: $todos)
+                NewTodoView(sourceArray: $todoManager.todos)
                     .presentationDetents([.medium])
             }
 
@@ -65,4 +44,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
+        .environment(TodoManager())
 }

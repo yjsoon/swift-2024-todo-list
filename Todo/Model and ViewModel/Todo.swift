@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct Todo: Identifiable {
+struct Todo: Identifiable, Codable, Equatable {
     var id = UUID()
     var title: String
     var subtitle = ""
