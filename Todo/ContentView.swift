@@ -17,16 +17,14 @@ struct ContentView: View {
     
     var body: some View {
         NavigationStack {
-            List {
-                ForEach($todos) { $todo in
-                    HStack {
-                        Image(systemName: todo.isCompleted ? "checkmark.circle.fill" : "circle")
-                            .onTapGesture {
-                                todo.isCompleted.toggle()
-                            }
-                        Text(todo.title)
-                            .strikethrough(todo.isCompleted)
-                    }
+            List ($todos) { $todo in
+                HStack {
+                    Image(systemName: todo.isCompleted ? "checkmark.circle.fill" : "circle")
+                        .onTapGesture {
+                            todo.isCompleted.toggle()
+                        }
+                    Text(todo.title)
+                        .strikethrough(todo.isCompleted)
                 }
             }
         }
