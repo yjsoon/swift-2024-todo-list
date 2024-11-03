@@ -9,6 +9,8 @@ import SwiftUI
 
 struct ContentView: View {
     
+    @State private var showAddSheet = false
+    
     @State private var todos = [Todo(title: "Feed the cat", isCompleted: true),
                                 Todo(title: "Play with cat", subtitle: "Use his favourite String!"),
                                 Todo(title: "Get allergies"),
@@ -17,7 +19,7 @@ struct ContentView: View {
     
     var body: some View {
         NavigationStack {
-            List ($todos) { $todo in
+            List ($todos, editActions: [.all]) { $todo in
                 NavigationLink {
                     TodoDetailView(todo: $todo)
                 } label:{
@@ -40,6 +42,23 @@ struct ContentView: View {
                 }
             }
             .navigationTitle("Todos")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    EditButton()
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        showAddSheet = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                }
+            }
+            .sheet(isPresented: $showAddSheet) {
+                NewTodoView(sourceArray: $todos)
+                    .presentationDetents([.medium])
+            }
+
         }
     }
 }
