@@ -15,6 +15,9 @@ import Observation
             save()
         }
     }
+    
+    var numTodosLeft : Int { todos.filter { !$0.isCompleted }.count }
+    var numTodosDone : Int { todos.filter { $0.isCompleted }.count }
         
     init() {
         load()
@@ -39,6 +42,7 @@ import Observation
     
     private func load() {
         let archiveURL = getArchiveURL()
+        print(archiveURL)
         let jsonDecoder = JSONDecoder()
                 
         if let retrievedTodoData = try? Data(contentsOf: archiveURL),

@@ -8,36 +8,16 @@
 import SwiftUI
 
 struct ContentView: View {
-    
-    @State private var showAddSheet = false
-    @Environment(TodoManager.self) var todoManager
-    
+        
     var body: some View {
-        
-        @Bindable var todoManager = todoManager
-        
-        NavigationStack {
-            List ($todoManager.todos, editActions: [.all]) { $todo in
-                TodoRowView(todo: $todo)
+        TabView {
+            Tab("Todos", systemImage: "list.bullet") {
+                MainTodoListView()
             }
-            .navigationTitle("Todos")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    EditButton()
-                }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        showAddSheet = true
-                    } label: {
-                        Image(systemName: "plus")
-                    }
-                }
+            
+            Tab("Remaining" , systemImage: "checkmark.circle") {
+                HowManyMoreView()
             }
-            .sheet(isPresented: $showAddSheet) {
-                NewTodoView(sourceArray: $todoManager.todos)
-                    .presentationDetents([.medium])
-            }
-
         }
     }
 }
