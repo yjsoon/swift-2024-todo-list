@@ -17,9 +17,10 @@ struct MainTodoListView: View {
         @Bindable var todoManager = todoManager
         
         NavigationStack {
-            List ($todoManager.todos, editActions: [.all]) { $todo in
+            List (todoManager.todosFiltered, editActions: [.all]) { $todo in
                 TodoRowView(todo: $todo)
             }
+            .searchable(text: $todoManager.searchTerm)
             .navigationTitle("Todos")
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {

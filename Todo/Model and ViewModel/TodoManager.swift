@@ -8,6 +8,7 @@
 
 import Foundation
 import Observation
+import SwiftUI
 
 @Observable class TodoManager {
     var todos: [Todo] = [] {
@@ -15,6 +16,24 @@ import Observation
             save()
         }
     }
+    var searchTerm = ""
+    
+    var todosFiltered: Binding<[Todo]> {
+        Binding (
+            get: {
+                if self.searchTerm.isEmpty {
+                    return self.todos
+                }
+                return self.todos.filter {
+                    $0.title.localizedCaseInsensitiveContains(self.searchTerm)
+                }
+            },
+            set: { value in
+                self.todos = value
+            }
+        )
+    }
+    
     
     var numTodosLeft : Int { todos.filter { !$0.isCompleted }.count }
     var numTodosDone : Int { todos.filter { $0.isCompleted }.count }
