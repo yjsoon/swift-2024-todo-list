@@ -4,8 +4,8 @@ struct NewTodoView: View {
     
     @State private var todoTitle = ""
     @State private var todoSubtitle = ""
-    @Binding var sourceArray: [Todo]
     @Environment(\.dismiss) var dismiss
+    @Environment(TodoManager.self) var todoManager
     
     var body: some View {
         Form {
@@ -17,7 +17,7 @@ struct NewTodoView: View {
             Section("Actions") {
                 Button("Save") {
                     let todo = Todo(title: todoTitle, subtitle: todoSubtitle)
-                    sourceArray.append(todo)
+                    todoManager.addTodo(todo)
                     dismiss()
                 }
                 .disabled(todoTitle.isEmpty) // prevent saving if no title
@@ -31,6 +31,6 @@ struct NewTodoView: View {
 }
 
 #Preview {
-    @Previewable @State var todos: [Todo] = []
-    NewTodoView(sourceArray: $todos)
+    NewTodoView()
+        .environment(TodoManager())
 }

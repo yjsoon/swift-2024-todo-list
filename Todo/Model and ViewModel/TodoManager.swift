@@ -42,6 +42,10 @@ import SwiftUI
         load()
     }
     
+    func addTodo(_ newTodo: Todo) {
+        todos.append(newTodo)
+    }
+    
     func loadSampleData() {
         todos = Todo.sampleTodos
     }

@@ -44,7 +44,7 @@ struct MainTodoListView: View {
                 }
             }
             .sheet(isPresented: $showAddSheet) {
-                NewTodoView(sourceArray: $todoManager.todos)
+                NewTodoView()
                     .presentationDetents([.medium])
             }
             .alert("Load sample data? Warning: This cannot be undone!", isPresented: $showConfirmAlert) {
