@@ -6,21 +6,35 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct MainTodoListView: View {
     
-    @Environment(TodoManager.self) var todoManager
+    @Environment(\.modelContext) var modelContext
+    @Query(sort: \Todo.sortIndex) var todos: [Todo]
     @State private var showConfirmAlert = false
     @State private var showAddSheet = false
+    @State private var searchTerm = ""
+    
+    var filteredTodos: [Todo] {
+        if searchTerm.isEmpty {
+            return todos
+        } else {
+            return todos.filter { $0.title.localizedStandardContains(searchTerm) }
+        }
+    }
     
     var body: some View {
-        @Bindable var todoManager = todoManager
         
         NavigationStack {
-            List (todoManager.todosFiltered, editActions: [.all]) { $todo in
-                TodoRowView(todo: $todo)
+            List {
+                ForEach(filteredTodos) { todo in
+                    TodoRowView(todo: todo)
+                }
+                .onDelete(perform: deleteTodos)
+                .onMove(perform: moveTodos)
             }
-            .searchable(text: $todoManager.searchTerm)
+            .searchable(text: $searchTerm)
             .navigationTitle("Todos")
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -48,17 +62,37 @@ struct MainTodoListView: View {
                     .presentationDetents([.medium])
             }
             .alert("Load sample data? Warning: This cannot be undone!", isPresented: $showConfirmAlert) {
-                Button("Replace", role: .destructive) {
-                    todoManager.loadSampleData()
-                }
+                Button("Replace", role: .destructive, action: loadSampleData)
             }
-
+            
         }
-
+        
     }
+    
+    private func deleteTodos(at offsets: IndexSet) {
+        for index in offsets {
+            modelContext.delete(todos[index])
+        }
+    }
+    
+    private func moveTodos(from source: IndexSet, to destination: Int) {
+        
+        // We need to "manually" sort things by editing their sort indices.
+        var revisedItems = todos.map { $0 }
+        revisedItems.move(fromOffsets: source, toOffset: destination)
+        for (index, item) in revisedItems.enumerated() {
+            item.sortIndex = index
+        }
+    }
+    
+    private func loadSampleData() {
+        todos.forEach { modelContext.delete($0) }
+        Todo.sampleTodos.forEach { modelContext.insert($0) }
+    }
+    
 }
 
 #Preview {
     MainTodoListView()
-        .environment(TodoManager())
+        .modelContainer(for: Todo.self, inMemory: true)
 }

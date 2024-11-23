@@ -6,22 +6,32 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct HowManyMoreView: View {
+
+    @Environment(\.modelContext) var modelContext
+    @Query var todos: [Todo]
     
-    @Environment(TodoManager.self) var todoManager
+    var numTodosLeft: Int {
+        todos.filter { !$0.isCompleted }.count
+    }
+    
+    var numTodosDone: Int {
+        todos.filter { $0.isCompleted }.count
+    }
 
     var body: some View {
         VStack {
             Text("You have:")
                 .font(.largeTitle)
-            Text("\(todoManager.numTodosLeft)")
+            Text("\(numTodosLeft)")
                 .font(.system(size: 140))
                 .foregroundStyle(.blue)
                 .padding()
-            Text(todoManager.numTodosLeft == 1 ? "todo left.": "todos left.")
+            Text(numTodosLeft == 1 ? "todo left.": "todos left.")
                 .font(.largeTitle)
-            Text("You have completed ^[\(todoManager.numTodosDone) todos](inflect: true). Good job.")
+            Text("You have completed ^[\(numTodosDone) todos](inflect: true). Good job.")
                 .padding(.top)
         }
 
@@ -30,5 +40,5 @@ struct HowManyMoreView: View {
 
 #Preview {
     HowManyMoreView()
-        .environment(TodoManager())
+        .modelContainer(for: Todo.self, inMemory: true)
 }

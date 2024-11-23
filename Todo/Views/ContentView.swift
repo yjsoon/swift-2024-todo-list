@@ -24,5 +24,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-        .environment(TodoManager())
+        .modelContainer(for: Todo.self, inMemory: true)
 }

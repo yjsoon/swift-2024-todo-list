@@ -9,7 +9,7 @@ import SwiftUI
 
 struct TodoDetailView: View {
     
-    @Binding var todo: Todo
+    @Bindable var todo: Todo
     
     var body: some View {
         Form {
@@ -24,5 +24,5 @@ struct TodoDetailView: View {
 
 #Preview {
     @Previewable @State var todo = Todo(title: "Feed demo cat")
-    TodoDetailView(todo: $todo)
+    TodoDetailView(todo: todo)
 }

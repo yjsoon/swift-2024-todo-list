@@ -9,11 +9,11 @@
 import SwiftUI
 
 struct TodoRowView: View {
-    @Binding var todo: Todo
+    @Bindable var todo: Todo
     
     var body: some View {
         NavigationLink {
-            TodoDetailView(todo: $todo)
+            TodoDetailView(todo: todo)
         } label: {
             HStack {
                 Image(systemName: todo.isCompleted ? "checkmark.circle.fill" : "circle")
@@ -38,6 +38,6 @@ struct TodoRowView: View {
 #Preview {
     @Previewable @State var todo = Todo(title: "Feed demo cat")
     List {
-        TodoRowView(todo: $todo)
+        TodoRowView(todo: todo)
     }
 }

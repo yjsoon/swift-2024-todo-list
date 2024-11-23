@@ -5,11 +5,18 @@
 //  Created by YJ Soon on 3/11/24.
 //
 
-import SwiftUI
+import SwiftData
 
-struct Todo: Identifiable, Codable, Equatable {
-    var id = UUID()
+@Model class Todo: Equatable {
     var title: String
-    var subtitle = ""
-    var isCompleted = false
+    var subtitle: String
+    var isCompleted: Bool
+    var sortIndex: Int
+    
+    init(title: String, subtitle: String = "", isCompleted: Bool = false, sortIndex: Int = 0) {
+        self.title = title
+        self.subtitle = subtitle
+        self.isCompleted = isCompleted
+        self.sortIndex = sortIndex
+    }
 }
